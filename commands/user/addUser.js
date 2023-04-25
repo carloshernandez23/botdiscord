@@ -29,7 +29,10 @@ module.exports = {
       const lastName = interaction.options.getString('apellido');
       const email = interaction.options.getString('email');
       const id = interaction.user.id;
-      console.log(name, lastName, email, id);
+
+      const created = new Date().toISOString();
+      console.log(created);
+      console.log(new Date(created).toLocaleString());
 
       const statement = db.prepare(`
     INSERT INTO users (user_id, first_name, last_name, email) 
