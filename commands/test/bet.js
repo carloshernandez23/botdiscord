@@ -15,7 +15,6 @@ const createEmbed = async (eventData) => {
     .setTitle(eventData.Name)
     .addFields(
       { name: 'PELEA PRINCIPAL', value: `${eventData.Fights[0].Fighters[0].FirstName} ${eventData.Fights[0].Fighters[0].LastName} VS ${eventData.Fights[0].Fighters[1].FirstName} ${eventData.Fights[0].Fighters[1].LastName}` },
-      { name: 'GANADOR', value: `${eventData.Fights[1].Fighters[true]}` },
       { name: 'PELEA SECUNDARIA', value: `${eventData.Fights[1].Fighters[0].FirstName} ${eventData.Fights[1].Fighters[0].LastName} VS ${eventData.Fights[1].Fighters[1].FirstName} ${eventData.Fights[1].Fighters[1].LastName}` },
 
     );
