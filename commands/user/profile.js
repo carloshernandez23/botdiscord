@@ -12,17 +12,35 @@ module.exports = {
 
       const statement = db.prepare(`
     SELECT * FROM users
-    WHERE user_id = ?
-    `);
+    JOIN notes
+    ON users.user_id = notes.user_id
+    WHERE users.user_id = ?
+  `);
 
-      const user = statement.get(id);
+      const user = statement.all(id);
+      console.log('prueba');
+      const usersito = user.reduce((acc, next) => {
+        if (!acc.notes) {
+          acc.notes = [];
+        }
+        const note = { id: next.note_id, content: next.content };
+        acc.notes = [...acc.notes, note];
+        acc.name = `${next.first_name} ${next.last_name}`;
+        acc.email = next.email;
+        acc.created = next.created_at;
+        return acc;
+      }, {});
 
-      await interaction.reply(
+      if(!user) return await interaction.reply('Ups, tu usuario no se encuentra registrado');
+
+      await interaction.reply({ content:
         stripIndents`
         ${bold('Usuario:')}<@${id}>
-        ${bold('Nombre:')} ${user.first_name} ${user.last_name}
-        ${bold('Email:')} ${user.email}
-    `);
+        ${bold('Nombre:')} ${usersito.name}
+        ${bold('Email:')} ${usersito.email}
+        ${bold('Notas creadas:')} ${usersito.notes.length}
+        ${bold('Fecha de creacion:')} ${new Date(usersito.created).toLocaleString().split(',')[0]}
+    `, ephemeral: true });
 
     } catch (error) {
       if (error.message === 'UNIQUE constraint failed: users.user_id') {
