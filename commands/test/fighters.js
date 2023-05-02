@@ -22,6 +22,11 @@ const createEmbed = async (filteredFighters) => {
       { name: 'Last Name', value: `${filteredFighters[0].LastName}`, inline : true },
       { name: 'Wins', value: `${bold(String(filteredFighters[0].Wins))}`, inline : true },
       { name: 'Losses', value: `${bold(String(filteredFighters[0].Losses))}`, inline : true },
+      { name: 'Draws', value: `${bold(String(filteredFighters[0].Draws))}`, inline : true },
+      { name: 'Technical Knockouts', value: `${bold(String(filteredFighters[0].TechnicalKnockouts))}`, inline : true },
+      { name: 'Submissions', value: `${bold(String(filteredFighters[0].Submissions))}`, inline : true },
+      { name: 'Title Wins', value: `${bold(String(filteredFighters[0].TitleWins))}`, inline : true },
+      { name: 'Technical Knockouts Losses', value: `${bold(String(filteredFighters[0].TechnicalKnockoutLosses))}`, inline : true },
     );
   return exampleEmbed;
 
