@@ -31,15 +31,13 @@ module.exports = {
       const id = interaction.user.id;
 
       const created = new Date().toISOString();
-      console.log(created);
-      console.log(new Date(created).toLocaleString());
 
       const statement = db.prepare(`
-    INSERT INTO users (user_id, first_name, last_name, email) 
-    VALUES (?, ?, ?, ?)
+    INSERT INTO users (user_id, first_name, last_name, email, created_at) 
+    VALUES (?, ?, ?, ?, ?)
     `);
 
-      statement.run(id, name, lastName, email);
+      statement.run(id, name, lastName, email, created);
 
       await interaction.reply(`Bienvenido <@${id}> al servidor`);
 
@@ -47,5 +45,6 @@ module.exports = {
       if (error.message === 'UNIQUE constraint failed: users.user_id') {
         await interaction.reply(`<@${interaction.user.id}> Tu usuario ya esta registrado`);
       }
+
     }
   } };
