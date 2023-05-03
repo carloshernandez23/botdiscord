@@ -11,7 +11,7 @@ const createEmbed = async (eventData) => {
 
 
   const exampleEmbed = new EmbedBuilder()
-
+    .setColor([0, 0, 255])
     .setTitle(eventData.Name)
     .addFields(
       { name: 'PELEA PRINCIPAL', value: `${eventData.Fights[0].Fighters[0].FirstName} ${eventData.Fights[0].Fighters[0].LastName} VS ${eventData.Fights[0].Fighters[1].FirstName} ${eventData.Fights[0].Fighters[1].LastName}` },
@@ -23,7 +23,7 @@ const createEmbed = async (eventData) => {
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName('ufc')
+    .setName('event')
     .setDescription('te muestra datos del evento!')
     .addStringOption(option =>
       option
@@ -45,3 +45,4 @@ module.exports = {
 
   },
 };
+
