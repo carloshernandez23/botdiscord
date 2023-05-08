@@ -1,6 +1,7 @@
 const { default: axios } = require('axios');
 const { SlashCommandBuilder, EmbedBuilder, bold } = require('discord.js');
 
+
 let fighters = [];
 
 const getFighter = async () => {
@@ -15,11 +16,11 @@ const createEmbed = async (filteredFighters) => {
     .setColor([136, 8, 8])
     .setTitle(`${filteredFighters[0].FirstName} ${bold(filteredFighters[0].Nickname ? filteredFighters[0].Nickname : ' ' )} ${filteredFighters[0].LastName}`)
     .addFields(
-      { name: 'First Name', value: `${filteredFighters[0].FirstName}`, inline : true },
-      { name: 'Last Name', value: `${filteredFighters[0].LastName}`, inline : true },
-      { name: 'Height', value: `${filteredFighters[0].Height}`, inline : true },
-      { name: 'Weight', value: `${filteredFighters[0].Weight}`, inline : true },
-      { name: 'Reach', value: `${filteredFighters[0].Reach}`, inline : true },
+      { name: 'First Name', value: `${bold(filteredFighters[0].FirstName)}`, inline : true },
+      { name: 'Last Name', value: `${bold(filteredFighters[0].LastName)}`, inline : true },
+      { name: 'Height', value: `${bold(filteredFighters[0].Height)}`, inline : true },
+      { name: 'Weight', value: `${bold(filteredFighters[0].Weight)}`, inline : true },
+      { name: 'Reach', value: `${bold(filteredFighters[0].Reach)}`, inline : true },
       { name: 'Wins 🥊', value: `${bold(String(filteredFighters[0].Wins))}`, inline : true },
       { name: 'Losses 💀', value: `${bold(String(filteredFighters[0].Losses))}`, inline : true },
       { name: 'Draws 🤝', value: `${bold(String(filteredFighters[0].Draws))}`, inline : true },
@@ -40,7 +41,7 @@ module.exports = {
     .addStringOption(option =>
       option
         .setName('fighter')
-        .setDescription('fighter by name, Ex: Conor')
+        .setDescription('fighter by Last Name, Ex: McGregor')
         .setRequired(true)
     ),
   async execute(interaction) {
@@ -48,10 +49,13 @@ module.exports = {
       await interaction.deferReply();
       const fighterData = await getFighter();
       fighters = [...fighterData];
-      const filteredFighters = fighters.filter(fighters => fighters.FirstName.toLowerCase().startsWith(interaction.options.getString('fighter').toLowerCase()));
+      const filteredFighters = fighters.filter(fighter => fighter?.LastName?.toLowerCase().startsWith(interaction.options.getString('fighter').toLowerCase()));
       const embed = await createEmbed(filteredFighters);
-      console.log(filteredFighters);
-      await interaction.editReply({ embeds : [embed] });
+      const message = await interaction.editReply({ embeds : [embed] });
+      message.react('❤');
+      message.react('💀');
+      message.react('👍');
+      message.react('👎');
     } catch (error) {
       console.log(error);
       await interaction.editReply(`<@${interaction.user.id}> has introducido un nombre erroneo, intenta de nuevo`);
