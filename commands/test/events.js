@@ -41,10 +41,7 @@ module.exports = {
       const embed = await createEmbed(eventData);
       console.log(eventData);
       const message = await interaction.editReply( { embeds : [embed] } );
-      message.react('❤');
-      message.react('💀');
-      message.react('👍');
-      message.react('👎');
+    
     } catch (error) {
       console.log(error);
       await interaction.editReply(`<@${interaction.user.id}> ESPERE UN MOMENTO POR FAVOR`);

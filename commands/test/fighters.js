@@ -1,5 +1,5 @@
 const { default: axios } = require('axios');
-const { SlashCommandBuilder, EmbedBuilder, bold } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, bold, ButtonBuilder, ButtonStyle, ActionRowBuilder } = require('discord.js');
 
 
 let fighters = [];
@@ -50,12 +50,32 @@ module.exports = {
       const fighterData = await getFighter();
       fighters = [...fighterData];
       const filteredFighters = fighters.filter(fighter => fighter?.LastName?.toLowerCase().startsWith(interaction.options.getString('fighter').toLowerCase()));
+
+      const ufc = new ButtonBuilder()
+			.setLabel('ufc')
+			.setStyle(ButtonStyle.Link)
+      .setURL(`https://www.ufcespanol.com/athlete/${filteredFighters[0].FirstName}-${filteredFighters[0].LastName}`);
+
+		  const like = new ButtonBuilder()
+			.setCustomId('like')
+			.setLabel('Like')
+			.setStyle(ButtonStyle.Primary);
+
+      const dislike = new ButtonBuilder()
+			.setCustomId('dislike')
+			.setLabel('Dislike')
+			.setStyle(ButtonStyle.Danger);
+
+      const row = new ActionRowBuilder()
+			.addComponents(ufc, like, dislike);
+
       const embed = await createEmbed(filteredFighters);
-      const message = await interaction.editReply({ embeds : [embed] });
-      message.react('❤');
-      message.react('💀');
-      message.react('👍');
-      message.react('👎');
+      const message = await interaction.editReply({ embeds : [embed], components: [row] } );
+      // message.react('❤');
+      // message.react('💀');
+      // message.react('👍');
+      // message.react('👎');
+
     } catch (error) {
       console.log(error);
       await interaction.editReply(`<@${interaction.user.id}> has introducido un nombre erroneo, intenta de nuevo`);
