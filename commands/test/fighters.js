@@ -10,14 +10,16 @@ const getFighter = async () => {
 
 };
 
+
 const createEmbed = async (filteredFighters) => {
 
   const exampleEmbed = new EmbedBuilder()
     .setColor([136, 8, 8])
+    .setThumbnail('https://imgur.com/Q1RG3bv.png')
     .setTitle(`${filteredFighters[0].FirstName} ${bold(filteredFighters[0].Nickname ? filteredFighters[0].Nickname : ' ' )} ${filteredFighters[0].LastName}`)
     .addFields(
-      { name: 'First Name', value: `${bold(filteredFighters[0].FirstName)}`, inline : true },
-      { name: 'Last Name', value: `${bold(filteredFighters[0].LastName)}`, inline : true },
+      { name: 'First Name', value: `${bold(filteredFighters[0].FirstName)}` },
+      { name: 'Last Name', value: `${bold(filteredFighters[0].LastName)}` },
       { name: 'Height', value: `${bold(filteredFighters[0].Height)}`, inline : true },
       { name: 'Weight', value: `${bold(filteredFighters[0].Weight)}`, inline : true },
       { name: 'Reach', value: `${bold(filteredFighters[0].Reach)}`, inline : true },
@@ -52,25 +54,25 @@ module.exports = {
       const filteredFighters = fighters.filter(fighter => fighter?.LastName?.toLowerCase().startsWith(interaction.options.getString('fighter').toLowerCase()));
 
       const ufc = new ButtonBuilder()
-			.setLabel('ufc')
-			.setStyle(ButtonStyle.Link)
-      .setURL(`https://www.ufcespanol.com/athlete/${filteredFighters[0].FirstName}-${filteredFighters[0].LastName}`);
+        .setLabel('ufc')
+        .setStyle(ButtonStyle.Link)
+        .setURL(`https://www.ufcespanol.com/athlete/${filteredFighters[0].FirstName}-${filteredFighters[0].LastName}`);
 
-		  const like = new ButtonBuilder()
-			.setCustomId('like')
-			.setLabel('Like')
-			.setStyle(ButtonStyle.Primary);
+      const like = new ButtonBuilder()
+        .setCustomId('like')
+        .setLabel('Like')
+        .setStyle(ButtonStyle.Primary);
 
       const dislike = new ButtonBuilder()
-			.setCustomId('dislike')
-			.setLabel('Dislike')
-			.setStyle(ButtonStyle.Danger);
+        .setCustomId('dislike')
+        .setLabel('Dislike')
+        .setStyle(ButtonStyle.Danger);
 
       const row = new ActionRowBuilder()
-			.addComponents(ufc, like, dislike);
+        .addComponents(ufc, like, dislike);
 
       const embed = await createEmbed(filteredFighters);
-      const message = await interaction.editReply({ embeds : [embed], components: [row] } );
+      await interaction.editReply({ embeds : [embed], components: [row] } );
       // message.react('❤');
       // message.react('💀');
       // message.react('👍');
