@@ -1,6 +1,6 @@
 const { default: axios } = require('axios');
 const { SlashCommandBuilder, EmbedBuilder, bold, ButtonBuilder, ButtonStyle, ActionRowBuilder } = require('discord.js');
-
+const db = require('../../db/db');
 
 let fighters = [];
 
@@ -48,11 +48,10 @@ module.exports = {
     ),
   async execute(interaction) {
     try {
-      await interaction.deferReply();
+      // await interaction.deferReply();
       const fighterData = await getFighter();
       fighters = [...fighterData];
       const filteredFighters = fighters.filter(fighter => fighter?.LastName?.toLowerCase().startsWith(interaction.options.getString('fighter').toLowerCase()));
-
       const ufc = new ButtonBuilder()
         .setLabel('ufc')
         .setStyle(ButtonStyle.Link)
@@ -63,26 +62,35 @@ module.exports = {
         .setLabel('Like')
         .setStyle(ButtonStyle.Primary);
 
-      const dislike = new ButtonBuilder()
-        .setCustomId('dislike')
-        .setLabel('Dislike')
-        .setStyle(ButtonStyle.Danger);
-
       const row = new ActionRowBuilder()
-        .addComponents(ufc, like, dislike);
+        .addComponents(ufc, like);
 
       const embed = await createEmbed(filteredFighters);
-      await interaction.editReply({ embeds : [embed], components: [row] } );
-      // message.react('❤');
-      // message.react('💀');
-      // message.react('👍');
-      // message.react('👎');
+      await interaction.reply({ embeds : [embed], components: [row], ephemeral: true } );
+
+
+
+      // Insertar valores en la tabla fighters
+      const created_at = new Date().toISOString();
+      const fighter_name = filteredFighters[0].FirstName;
+      const fighter_lastname = filteredFighters[0].LastName;
+      const fighter_id = filteredFighters[0].FighterId;
+      const user_id = interaction.user.id;
+
+      const statement = db.prepare(`
+    INSERT INTO fighters (created_at, fighter_id, fighter_name, fighter_lastname, user_id)
+    VALUES (?, ?, ?, ?, ?)
+    `);
+
+      statement.run(created_at, fighter_id, fighter_name, fighter_lastname, user_id);
+
+
 
     } catch (error) {
       console.log(error);
       await interaction.editReply(`<@${interaction.user.id}> has introducido un nombre erroneo, intenta de nuevo`);
-    }
 
+    }
   },
 };
 

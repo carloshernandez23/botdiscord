@@ -15,13 +15,14 @@ const createUsersTable = () => {
   statement.run();
 };
 
-const createNotesTable = () => {
-  db.prepare('DROP TABLE IF EXISTS notes').run();
+const createFightersTable = () => {
+  db.prepare('DROP TABLE IF EXISTS fighters').run();
   const statement = db.prepare(`
-    CREATE TABLE IF NOT EXISTS notes (
-    note_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    CREATE TABLE IF NOT EXISTS fighters (
+    fighter_id INTEGER PRIMARY KEY AUTOINCREMENT,
     created_at DATE NOT NULL,
-    content TEXT NOT NULL,
+    fighter_name TEXT NOT NULL,
+    fighter_lastname TEXT NOT NULL,
     user_id TEXT NOT NULL,
     FOREIGN KEY (user_id)
      REFERENCES users (user_id)
@@ -35,7 +36,7 @@ const createNotesTable = () => {
 const createTables = async () => {
   console.log('Creando tablas...');
   createUsersTable();
-  createNotesTable();
+  createFightersTable();
   console.log('Tablas creadas!');
 };
 

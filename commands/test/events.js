@@ -44,13 +44,8 @@ module.exports = {
         .setLabel('Like')
         .setStyle(ButtonStyle.Primary);
 
-      const dislike = new ButtonBuilder()
-        .setCustomId('dislike')
-        .setLabel('Dislike')
-        .setStyle(ButtonStyle.Danger);
-
       const row = new ActionRowBuilder()
-        .addComponents(like, dislike);
+        .addComponents(like);
 
       await interaction.editReply( { embeds : [embed], components: [row] } );
       console.log(eventData);
