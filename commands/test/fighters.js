@@ -69,20 +69,33 @@ module.exports = {
       await interaction.reply({ embeds : [embed], components: [row], ephemeral: true } );
 
 
+      const reply = await interaction.fetchReply();
+      // Esperamos a que se haga click en el botón
+      const filter = (interaction) => {
+        return interaction.customId === 'like' && interaction.user.id;
+      };
+      const collector = reply.createMessageComponentCollector({ filter, time: 5000 }); // El colector escucha eventos durante 15 segundos
 
-      // Insertar valores en la tabla fighters
-      const created_at = new Date().toISOString();
-      const fighter_name = filteredFighters[0].FirstName;
-      const fighter_lastname = filteredFighters[0].LastName;
-      const fighter_id = filteredFighters[0].FighterId;
-      const user_id = interaction.user.id;
+      collector.on('collect', async (interaction) => {
+        await interaction.update({ content: '¡HAZ DADO LIKE SE GUARDO EN TU HISTORIAL, PARA REVISAR TU HISTORIAL USA EL COMANDO /history ❤!', components: [] });// Eliminamos el botón
+        collector.stop(); // Detenemos el colector
 
-      const statement = db.prepare(`
-    INSERT INTO fighters (created_at, fighter_id, fighter_name, fighter_lastname, user_id)
-    VALUES (?, ?, ?, ?, ?)
-    `);
+        // Insertar valores en la tabla fighters
+        const created_at = new Date().toISOString();
+        const fighter_name = filteredFighters[0].FirstName;
+        const fighter_lastname = filteredFighters[0].LastName;
+        const fighter_id = filteredFighters[0].FighterId;
+        const user_id = interaction.user.id;
 
-      statement.run(created_at, fighter_id, fighter_name, fighter_lastname, user_id);
+        const statement = db.prepare(`
+      INSERT INTO fighters (created_at, fighter_id, fighter_name, fighter_lastname, user_id)
+      VALUES (?, ?, ?, ?, ?)
+      `);
+
+        statement.run(created_at, fighter_id, fighter_name, fighter_lastname, user_id);
+      });
+
+
 
 
 
