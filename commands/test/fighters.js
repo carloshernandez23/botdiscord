@@ -80,22 +80,43 @@ module.exports = {
         await interaction.update({ content: '¡HAZ DADO LIKE SE GUARDO EN TU HISTORIAL, PARA REVISAR TU HISTORIAL USA EL COMANDO /history ❤!', components: [] });// Eliminamos el botón
         collector.stop(); // Detenemos el colector
 
-        // Insertar valores en la tabla fighters
+
         const created_at = new Date().toISOString();
         const fighter_name = filteredFighters[0].FirstName;
         const fighter_lastname = filteredFighters[0].LastName;
         const fighter_id = filteredFighters[0].FighterId;
-        const user_id = interaction.user.id;
+        // Buscar el peleador en la base de datos
+        const statement2 = db.prepare(`
+        SELECT * FROM fighters 
+        WHERE fighter_id = ?
+        `);
 
-        const statement = db.prepare(`
-      INSERT INTO fighters (created_at, fighter_id, fighter_name, fighter_lastname, user_id)
-      VALUES (?, ?, ?, ?, ?)
-      `);
+        const peleadorExistente = statement2.get(fighter_id);
+        console.log(peleadorExistente);
+        if (peleadorExistente) {
+          const statement = db.prepare(`
+          UPDATE fighters
+          set contador = ? 
+          WHERE fighter_id = ?
+        `);
 
-        statement.run(created_at, fighter_id, fighter_name, fighter_lastname, user_id);
+          statement.run(peleadorExistente.contador + 1, fighter_id);
+
+        } else {
+          // Insertar valores en la tabla fighters
+          const statement = db.prepare(`
+          INSERT INTO fighters (created_at, fighter_id, fighter_name, fighter_lastname, contador)
+          VALUES (?, ?, ?, ?, ?)
+          `);
+
+          statement.run(created_at, fighter_id, fighter_name, fighter_lastname, 1);
+        }
+
+
+
+
+
       });
-
-
 
 
 

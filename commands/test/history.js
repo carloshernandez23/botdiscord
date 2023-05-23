@@ -5,40 +5,28 @@ const { stripIndents } = require('common-tags');
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('history')
-    .setDescription('Muestra los nombres de los peleadores a los que has dado like!'),
+    .setDescription('Muestra los nombres de los peleadores que tienen mas likes!'),
   async execute(interaction) {
     try {
-      const id = interaction.user.id;
 
-      const statement = db.prepare(`
-    SELECT * FROM users
-    WHERE user_id = ?
-  `);
-
-      const user = statement.get(id);
-
-      if(!user) return await interaction.reply('Ups, tu usuario no se encuentra registrado');
 
       const fighterStatement = db.prepare(`
       SELECT * FROM fighters
-      WHERE user_id = ?
+      ORDER BY contador DESC
+	    ;
+      
     `);
 
-      const fighter = fighterStatement.all(id);
+      const fighter = fighterStatement.all();
+      console.log(fighter);
 
-      let fighterNames = '';
-
-
-      if (fighter.length > 0) {
-        fighterNames = fighter.map(fighter => fighter.fighter_name + fighter.fighter_lastname).join(', ');
-
-      } else {
-        fighterNames = 'No has dado like a ningun peleador todavía';
-      }
+      const id = interaction.user.id;
       await interaction.reply({ content:
         stripIndents`
         ${bold('Usuario:')}<@${id}>
-        ${bold('FAV Fighters:')} ${fighterNames}
+        ${bold('PELEADOR MAS LIKEADO #1:')} ${fighter[0].fighter_name +' '+ fighter[0].fighter_lastname}
+        ${bold('PELEADOR MAS LIKEADO #2:')} ${fighter[1].fighter_name +' '+ fighter[1].fighter_lastname}
+        ${bold('PELEADOR MAS LIKEADO #3:')} ${fighter[2].fighter_name +' '+ fighter[2].fighter_lastname}
     `, ephemeral: true });
 
     } catch (error) {

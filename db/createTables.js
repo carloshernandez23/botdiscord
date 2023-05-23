@@ -23,10 +23,7 @@ const createFightersTable = () => {
     created_at DATE NOT NULL,
     fighter_name TEXT NOT NULL,
     fighter_lastname TEXT NOT NULL,
-    user_id TEXT NOT NULL,
-    FOREIGN KEY (user_id)
-     REFERENCES users (user_id)
-      ON DELETE CASCADE   
+    contador INTEGER
     )
     `);
 
