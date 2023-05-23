@@ -18,7 +18,6 @@ module.exports = {
     `);
 
       const fighter = fighterStatement.all();
-      console.log(fighter);
 
       const id = interaction.user.id;
       await interaction.reply({ content:
